@@ -131,17 +131,25 @@
       <span>
         <el-upload
           class="upload-demo"
+          ref="upload"
           drag
-          action="https://jsonplaceholder.typicode.com/posts/"
+          action="http://localhost:8000/api/handle_word_txt/"
+          :on-exceed="handleExceed"
+          :on-success="handleSuccess"
+          :on-change="handleChange"
           multiple
-          limit="1">
+          limit="1"
+          accept=".txt,.doc,.docx"
+          :auto-upload="false">
     <i class="el-icon-upload"></i>
     <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
 </el-upload>
       </span>
       <span slot="footer" class="dialog-footer">
     <el-button @click="dialogVisible = false">取 消</el-button>
-    <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
+    <el-button type="primary"
+               :loading="loading"
+               @click=handleSubmit>确认上传</el-button>
   </span>
     </el-dialog>
   </div>
@@ -162,6 +170,7 @@
         checkboxGroup4: [],
         dialogVisible: false,
         radio: '0',
+        outputdata:'',
         // chartData: {
         //   columns: ['日期', '访问用户', '下单用户', '下单率'],
         //   rows: [
@@ -174,17 +183,38 @@
         //   ]
         // },
         chartData: {
-          columns: ['word', 'count'],
-          rows: getRows()
+          // columns: ['word', 'count'],
+          //  rows: getRows2()
+          //  rows: this.outputdata
         },
         chartSettings: { type: this.typeArr[this.index],
-          metrics: ['count'],
-          dimension: ['word']}
+          // metrics: ['count'],
+          // dimension: ['word']
+          }
       }
     },
     methods: {
       changeType: function () {
         this.chartSettings = { type: this.typeArr[this.radio] }
+      },
+
+
+      //处理上传
+      handleSubmit(filelist){
+        this.$refs.upload.submit();
+        filelist.clearFiles()
+      },
+
+      //上传成功回调
+      handleSuccess(response,file,filelist){
+        this.dialogVisible = false
+        console.log("清空")
+        console.log("清空")
+        console.log("清空")
+        console.log("清空")
+        console.log("清空")
+        console.log(file.response)
+        this.chartData = file.response
       },
       handleClose(done) {
         this.$confirm('确认关闭？')

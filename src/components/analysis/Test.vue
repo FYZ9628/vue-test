@@ -1,4 +1,5 @@
 <template>
+
   <el-container>
     <!-- 侧边导航菜单 -->
     <el-aside style="height: 100%" width="350px">
@@ -163,7 +164,37 @@
         </el-row>
       </div>
     </el-main>
+    <el-dialog
+      title="上传文件"
+      :visible.sync="dialogVisible"
+      width="30%"
+      :before-close="handleClose">
+      <span>
+        <el-upload
+          class="upload-demo"
+          ref="upload"
+          drag
+          action="http://localhost:8000/api/upload_excel/"
+          :on-exceed="handleExceed"
+          :on-success="handleSuccess"
+          :on-change="handleChange"
+          multiple
+          limit="1"
+          accept=".xls,.xlsx"
+          :auto-upload="false">
+    <i class="el-icon-upload"></i>
+    <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
+</el-upload>
+      </span>
+      <span slot="footer" class="dialog-footer">
+    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button type="primary"
+               :loading="loading"
+               @click=handleSubmit>确认上传</el-button>
+  </span>
+    </el-dialog>
   </el-container>
+
 </template>
 <script>
   import HomeHeader from '@/components/analysis/HomeHeader'
