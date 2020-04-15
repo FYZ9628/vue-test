@@ -48,7 +48,7 @@
     methods: {
       login(){
         this.logining = false
-        this.$router.push("home")
+        this.$router.push("index/home")
       }
       // login () {
       //   var _this = this

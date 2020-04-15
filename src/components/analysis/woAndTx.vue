@@ -1,139 +1,127 @@
 <template>
-  <el-container style="height: 100%;width: 100%">
-    <!-- 顶栏 -->
-    <el-header height="80px">
-      <home-header></home-header>
-    </el-header>
-    <!-- 嵌套容器 -->
-    <el-container >
-      <el-header>
-        <navigation></navigation>
-      </el-header>
-      <el-container>
-        <!-- 侧边导航菜单 -->
-        <el-aside style="height: 100%" width="350px">
-          <el-row style="height: 20%">
-            <el-col :span="24" class="grid-a-contentWidth">
+  <div>
+    <el-container>
+      <!-- 侧边导航菜单 -->
+      <el-aside style="height: 100%" width="350px">
+        <el-row style="height: 20%">
+          <el-col :span="24" class="grid-a-contentWidth">
 
-              <el-row  type="flex">
-                <el-col :span="23" align="middle"><div class="grid-content bg-purple">
-                  <h3 class="login_title">文件上传</h3>
-                </div></el-col>
-              </el-row>
-              <el-row  type="flex">
-                <el-col :span="23"><div class="grid-content bg-purple">
-                  <el-button type="primary" @click="dialogVisible = true">上传<i class="el-icon-upload el-icon--right"></i></el-button>
-                </div></el-col>
-              </el-row>
+            <el-row  type="flex">
+              <el-col :span="23" align="middle"><div class="grid-content bg-purple">
+                <h3 class="login_title">文件上传</h3>
+              </div></el-col>
+            </el-row>
+            <el-row  type="flex">
+              <el-col :span="23"><div class="grid-content bg-purple">
+                <el-button type="primary" @click="dialogVisible = true">上传<i class="el-icon-upload el-icon--right"></i></el-button>
+              </div></el-col>
+            </el-row>
 
-            </el-col>
-            <el-divider></el-divider>
-          </el-row>
-          <el-row style="height: 20%">
+          </el-col>
+          <el-divider></el-divider>
+        </el-row>
+        <el-row style="height: 20%">
+          <el-col :span="24" class="grid-a-contentWidth">
+            <el-row type="flex">
+              <el-col :span="23" align="middle"><div class="grid-content bg-purple">
+                <h3 class="login_title">图表选择</h3>
+              </div></el-col>
+            </el-row>
+            <el-row  type="flex">
+              <el-col :span="23"><div class="grid-content bg-purple">
+                <el-radio-group v-model="radio" @change="changeType">
+                  <el-radio v-model="radio" label="0">柱状图</el-radio>
+                  <el-radio v-model="radio" label="1">饼图</el-radio>
+                </el-radio-group>
+              </div></el-col>
+            </el-row>
+          </el-col>
+          <el-divider></el-divider>
+        </el-row>
+        <el-row style="height: 50%">
+          <el-col :span="24" class="grid-a-contentWidth">
+            <el-row  type="flex" style="margin-top: 10px">
+              <el-col :span="6" :offset="15">
+                <el-button type="primary">确定</el-button>
+              </el-col>
+            </el-row>
+          </el-col>
+        </el-row>
+      </el-aside>
+      <!-- 内容 -->
+      <el-main style="height: 100%">
+        <!--          &lt;!&ndash; 第一列栅格布局 &ndash;&gt;-->
+        <!--          <div style="height: 35%;margin-top: 10px">-->
+        <!--            <el-row >-->
+        <!--              <el-col :span="24" class="grid-a-contentWidth">-->
+        <!--                <el-row type="flex" style="margin-top: 20px">-->
+        <!--                  <el-col :span="24" align="middle"><div class="grid-content bg-purple">-->
+        <!--                    <h3 class="login_title">词云</h3>-->
+        <!--                  </div></el-col>-->
+        <!--                </el-row>-->
+        <!--                <el-row  type="flex">-->
+        <!--                  <el-col :span="24"><div class="grid-content bg-purple">-->
+        <!--                    <ve-wordcloud :data="chartData"></ve-wordcloud>-->
+        <!--                  </div></el-col>-->
+        <!--                </el-row>-->
+        <!--              </el-col>-->
+        <!--            </el-row>-->
+        <!--          </div>-->
+        <!-- 第一列栅格布局 -->
+        <div >
+          <el-row style="height: 30%;">
             <el-col :span="24" class="grid-a-contentWidth">
-              <el-row type="flex">
-                <el-col :span="23" align="middle"><div class="grid-content bg-purple">
-                  <h3 class="login_title">图表选择</h3>
+              <el-row type="flex" style="margin-top: 10px">
+                <el-col :span="24" align="middle"><div class="grid-content bg-purple">
+                  <h3 class="login_title">词云</h3>
                 </div></el-col>
               </el-row>
               <el-row  type="flex">
-                <el-col :span="23"><div class="grid-content bg-purple">
-                  <el-radio-group v-model="radio" @change="changeType">
-                    <el-radio v-model="radio" label="0">柱状图</el-radio>
-                    <el-radio v-model="radio" label="1">饼图</el-radio>
-                  </el-radio-group>
+                <el-col :span="24"><div class="grid-content bg-purple">
+                  <ve-wordcloud :data="chartData"></ve-wordcloud>
                 </div></el-col>
               </el-row>
             </el-col>
-            <el-divider></el-divider>
           </el-row>
-          <el-row style="height: 50%">
+        </div>
+        <!-- 第二列布局 -->
+        <div style="margin-top: 20px" >
+          <el-row style="height: 60%">
             <el-col :span="24" class="grid-a-contentWidth">
               <el-row  type="flex" style="margin-top: 10px">
-                <el-col :span="6" :offset="15">
-                  <el-button type="primary">确定</el-button>
-                </el-col>
+                <el-col :span="24" align="middle"><div class="grid-content bg-purple">
+                  <h3 class="login_title">图表显示</h3>
+                </div></el-col>
+              </el-row>
+              <el-row type="flex">
+                <el-col :span="24" align="middle">
+                  <div class="grid-content bg-purple">
+                    <ve-chart :data="chartData" :settings="chartSettings"></ve-chart>
+                  </div></el-col>
               </el-row>
             </el-col>
           </el-row>
-        </el-aside>
-
-
-        <!-- 内容 -->
-        <el-main style="height: 100%">
-<!--          &lt;!&ndash; 第一列栅格布局 &ndash;&gt;-->
-<!--          <div style="height: 35%;margin-top: 10px">-->
-<!--            <el-row >-->
-<!--              <el-col :span="24" class="grid-a-contentWidth">-->
-<!--                <el-row type="flex" style="margin-top: 20px">-->
-<!--                  <el-col :span="24" align="middle"><div class="grid-content bg-purple">-->
-<!--                    <h3 class="login_title">词云</h3>-->
-<!--                  </div></el-col>-->
-<!--                </el-row>-->
-<!--                <el-row  type="flex">-->
-<!--                  <el-col :span="24"><div class="grid-content bg-purple">-->
-<!--                    <ve-wordcloud :data="chartData"></ve-wordcloud>-->
-<!--                  </div></el-col>-->
-<!--                </el-row>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
-<!--          </div>-->
-          <!-- 第一列栅格布局 -->
-          <div >
-            <el-row style="height: 30%;">
-              <el-col :span="24" class="grid-a-contentWidth">
-                <el-row type="flex" style="margin-top: 10px">
-                  <el-col :span="24" align="middle"><div class="grid-content bg-purple">
-                    <h3 class="login_title">词云</h3>
-                  </div></el-col>
-                </el-row>
-                <el-row  type="flex">
-                  <el-col :span="24"><div class="grid-content bg-purple">
-                    <ve-wordcloud :data="chartData"></ve-wordcloud>
-                  </div></el-col>
-                </el-row>
-              </el-col>
-            </el-row>
-          </div>
-          <!-- 第二列布局 -->
-          <div style="margin-top: 20px" >
-            <el-row style="height: 60%">
-              <el-col :span="24" class="grid-a-contentWidth">
-                <el-row  type="flex" style="margin-top: 10px">
-                  <el-col :span="24" align="middle"><div class="grid-content bg-purple">
-                    <h3 class="login_title">图表显示</h3>
-                  </div></el-col>
-                </el-row>
-                <el-row type="flex">
-                  <el-col :span="24" align="middle">
-                    <div class="grid-content bg-purple">
-                      <ve-chart :data="chartData" :settings="chartSettings"></ve-chart>
-                    </div></el-col>
-                </el-row>
-              </el-col>
-            </el-row>
-          </div>
-<!--          &lt;!&ndash; 第二列布局 &ndash;&gt;-->
-<!--          <div style="margin-top: 20px; height: 60%">-->
-<!--            <el-row >-->
-<!--              <el-col :span="24" class="grid-a-contentWidth">-->
-<!--                <el-row  type="flex" style="margin-top: 20px">-->
-<!--                  <el-col :span="24" align="middle"><div class="grid-content bg-purple">-->
-<!--                    <h3 class="login_title">图表显示</h3>-->
-<!--                  </div></el-col>-->
-<!--                </el-row>-->
-<!--                <el-row type="flex">-->
-<!--                  <el-col :span="24" align="middle">-->
-<!--                    <div class="grid-content bg-purple">-->
-<!--                      <ve-chart :data="chartData" :settings="chartSettings"></ve-chart>-->
-<!--&lt;!&ndash;                      <ve-wordcloud :data="chartData"></ve-wordcloud>&ndash;&gt;-->
-<!--                    </div></el-col>-->
-<!--                </el-row>-->
-<!--              </el-col>-->
-<!--            </el-row>-->
-<!--          </div>-->
-        </el-main>
-      </el-container>
+        </div>
+        <!--          &lt;!&ndash; 第二列布局 &ndash;&gt;-->
+        <!--          <div style="margin-top: 20px; height: 60%">-->
+        <!--            <el-row >-->
+        <!--              <el-col :span="24" class="grid-a-contentWidth">-->
+        <!--                <el-row  type="flex" style="margin-top: 20px">-->
+        <!--                  <el-col :span="24" align="middle"><div class="grid-content bg-purple">-->
+        <!--                    <h3 class="login_title">图表显示</h3>-->
+        <!--                  </div></el-col>-->
+        <!--                </el-row>-->
+        <!--                <el-row type="flex">-->
+        <!--                  <el-col :span="24" align="middle">-->
+        <!--                    <div class="grid-content bg-purple">-->
+        <!--                      <ve-chart :data="chartData" :settings="chartSettings"></ve-chart>-->
+        <!--&lt;!&ndash;                      <ve-wordcloud :data="chartData"></ve-wordcloud>&ndash;&gt;-->
+        <!--                    </div></el-col>-->
+        <!--                </el-row>-->
+        <!--              </el-col>-->
+        <!--            </el-row>-->
+        <!--          </div>-->
+      </el-main>
     </el-container>
     <el-dialog
       title="上传文件"
@@ -156,7 +144,7 @@
     <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
   </span>
     </el-dialog>
-  </el-container>
+  </div>
 </template>
 <script>
   import HomeHeader from '@/components/analysis/HomeHeader'

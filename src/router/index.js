@@ -6,6 +6,7 @@ import exAndCs from '@/components/analysis/exAndCs'
 import woAndTx from '@/components/analysis/woAndTx'
 import Test from '@/components/analysis/Test'
 import UploadTest from '@/components/analysis/UploadTest'
+import AnalysisIndex from '@/components/analysis/AnalysisIndex'
 Vue.use(Router)
 
 export default new Router({
@@ -23,33 +24,41 @@ export default new Router({
     {
       path: '/login',
       name: 'Login',
-      component:Login
+      component: Login
     },
     {
-      path: '/home',
-      name: 'Home',
-      component: AnalysisHome
-    },
-    {
-      path: '/exAndcs',
-      name: 'ExAndcs',
-      component: exAndCs
-    },
-    {
-      path: '/woAndtx',
-      name: 'WoAndtx',
-      component: woAndTx
-    },
-    {
-      path: '/test',
-      name: 'Test',
-      component:Test,
-    },
-    {
-      path: '/upload_test',
-      name: 'upload_test',
-      component:UploadTest,
-    },
+      path: '/index',
+      name: 'AnalysisIndex',
+      redirect: '/index/home',
+      component: AnalysisIndex,
+      children: [
+        {
+          path: 'home',
+          name: 'Home',
+          component: AnalysisHome
+        },
+        {
+          path: 'exAndcs',
+          name: 'ExAndcs',
+          component: exAndCs
+        },
+        {
+          path: 'woAndtx',
+          name: 'WoAndtx',
+          component: woAndTx
+        },
+        {
+          path: 'test',
+          name: 'Test',
+          component:Test,
+        },
+        {
+          path: 'upload_test',
+          name: 'upload_test',
+          component:UploadTest,
+        }
+      ]
+    }
   ]
 
 })
