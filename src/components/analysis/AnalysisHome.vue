@@ -5,14 +5,14 @@
     <div style="height:100%;width:100%" >
       <el-row :gutter="10" type="flex" class="bg" justify="center" style="height: 30%;">
         <el-col :span="6"><div class="grid-a-contentWidth">
-          <a href="http://localhost:8080/exAndcs">
+          <a href="http://localhost:8080/index/exAndcs">
             <el-card :body-style="{ padding: '5px' }">
               <img src="../../assets/Excel_csv.png" class="image" width="250px">
             </el-card>
           </a>
         </div></el-col>
         <el-col :span="6"><div class="grid-a-contentWidth">
-          <a href="woAndTx">
+          <a href="http://localhost:8080/index/woAndTx">
             <el-card :body-style="{ padding: '0px' }">
               <img src="../../assets/world_txt.png" class="image" width="250px">
             </el-card>
