@@ -108,37 +108,14 @@
             <el-row  type="flex">
               <el-col :span="24"><div class="grid-content bg-purple">
                 <el-table
+                  fit="true"
+                  stripe="true"
                   :data="chartData.rows"
-                  max-height="400"
-                  border
-                  style="width: 100%"
-                  class="yulan">
-                  <el-table-column
-                    v-for="(item, index) in chartData.columns" :key="item.value"
-                    prop="item"
-                    width="180">
-                    <template slot="header" slot-scope="scope">
-                      {{item}}
-                    </template>
-                    <template slot-scope="scope">
-                      {{scope[index].item}}
-                      <div v-if="scope[index].日期 === item"></div>
-                    </template>
-                    {{item}}
-                  </el-table-column>
-                  <!--                      <el-table-column-->
-                  <!--                        prop="access_user_num"-->
-                  <!--                        label="访问用户"-->
-                  <!--                        width="180">-->
-                  <!--                      </el-table-column>-->
-                  <!--                      <el-table-column-->
-                  <!--                        prop="access_user_num"-->
-                  <!--                        label="下单用户">-->
-                  <!--                      </el-table-column>-->
-                  <!--                      <el-table-column-->
-                  <!--                        prop="order_rate"-->
-                  <!--                        label="下单率">-->
-                  <!--                      </el-table-column>-->
+                style="width: 100%">
+                <el-table-column v-for="item in chartData.columns" :key="item.value"
+                :prop="item"
+                :label="item">
+                </el-table-column>
                 </el-table>
               </div></el-col>
             </el-row>
@@ -276,6 +253,16 @@
         }
       }
     },
+    // computed:{
+    //   myThs:function(){
+    //     var ths = [];
+    //     for    (var k in chartData){
+    //       ths.push(k);
+    //       console.log(k)
+    //     }
+    //     return ths;
+    //   }
+    // },
     methods: {
 
       //改变图表类型
