@@ -2,7 +2,7 @@
 
   <el-container>
     <!-- 侧边导航菜单 -->
-    <el-aside style="height: 100%" width="350px">
+    <el-aside style="height: 100%" width="400px">
       <el-row style="height: 20%">
         <el-col :span="24" class="grid-a-contentWidth">
 
@@ -14,7 +14,7 @@
           <el-row  type="flex">
             <el-col :span="23"><div class="grid-content bg-purple">
               <el-button type="primary" @click="dialogVisible = true">上传<i class="el-icon-upload el-icon--right"></i></el-button>
-              <el-button type="primary" icon="el-icon-search">预览</el-button>
+              <el-button type="primary" icon="el-icon-search" @click="hanldePreview">预览</el-button>
             </div></el-col>
           </el-row>
 
@@ -53,7 +53,7 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="23"><div class="grid-content bg-purple">
+            <el-col :span="24"><div class="grid-content bg-purple">
               <el-checkbox-group
                 v-model="checkboxGroup1"
                 max="1">
@@ -67,7 +67,7 @@
             </el-col>
           </el-row>
           <el-row>
-            <el-col :span="23"><div class="grid-content bg-purple">
+            <el-col :span="24"><div class="grid-content bg-purple">
               <el-checkbox-group v-model="checkboxGroup2">
                 <el-checkbox-button v-for="option in checkboxOptions" :label="option" :key="option">{{option}}</el-checkbox-button>
               </el-checkbox-group>
@@ -86,13 +86,18 @@
           </el-row>
           <el-row  type="flex">
             <el-col :span="6" :offset="2">
-              <el-button type="primary">常规</el-button>
+              <el-button type="primary" @click="primaryHandle">常规</el-button>
             </el-col>
             <el-col :span="6" >
-              <el-button type="primary">求和</el-button>
+              <el-button type="primary" @click="sumHandle">求和</el-button>
             </el-col>
             <el-col :span="6" >
-              <el-button type="primary">求平均</el-button>
+              <el-button type="primary" @click="averageHandle">求平均</el-button>
+            </el-col>
+          </el-row>
+          <el-row  type="flex" style="margin-top: 10px">
+            <el-col :span="6" :offset="2" @click="statisticalHandle">
+              <el-button type="primary">统计</el-button>
             </el-col>
           </el-row>
         </el-col>
@@ -114,7 +119,10 @@
                   fit="true"
                   stripe="true"
                   :data="chartData.rows"
-                style="width: 100%">
+                  max-height="350"
+                  border
+                  v-if="tableShow"
+                  style="width: 100%">
                 <el-table-column v-for="item in chartData.columns" :key="item.value"
                 :prop="item"
                 :label="item">
@@ -137,7 +145,10 @@
             <el-row type="flex">
               <el-col :span="24" align="middle">
                 <div class="grid-content bg-purple">
-                  <ve-chart :data="chartData" :settings="chartSettings"></ve-chart>
+                  <ve-chart :data="chartData"
+                            :settings="chartSettings"
+                            :extend="extend"
+                  ></ve-chart>
                 </div></el-col>
             </el-row>
           </el-col>
@@ -183,48 +194,71 @@
     name: 'Test',
     components: {Navigation, HomeHeader},
     data () {
+      this.extend = {
+        series: {
+          label: { show: true, position: "top" }
+        }
+      },
       this.typeArr = ['histogram','line','pie']
       this.index = 0
-      // this.chartSettings = {
-      //   metrics: ['访问用户', '下单用户'],
-      //   dimension: ['日期']
-      // }
       return {
-        checkboxGroup1: [],
-        checkboxGroup2: [],
-        checkboxGroup3: [],
-        checkboxGroup4: [],
+        checkboxGroup1: [],//维度复选框组选中内容
+        checkboxGroup2: [],//指标复选框组选中内容
         checkList: [],
         radio: '0',
         dialogVisible: false,
         loading: false,
-        checkboxOptions:['日期', '访问用户', '下单用户'],
+        checkboxOptions:[],//复选框内容
         filelist:[],
+
+        tableShow:false,//设置预览表格显示
+        chartShow:false,//设置图表显示
+
         chartData: {
-          columns: ['日期', '访问用户', '下单用户'],
-          rows: [
-            { '日期': '05-01', '访问用户': 1393, '下单用户': 1093},
-            { '日期': '05-02', '访问用户': 3530, '下单用户': 3230},
-            { '日期': '05-03', '访问用户': 2923, '下单用户': 2623},
-            { '日期': '05-04', '访问用户': 1723, '下单用户': 1423},
-            { '日期': '05-05', '访问用户': 3792, '下单用户': 3492},
-            { '日期': '05-06', '访问用户': 4593, '下单用户': 4293}
-          ]
+          // columns: ['日期', '访问用户', '下单用户'],
+          // rows: [
+          //   { '日期': '05-01', '访问用户': 1393, '下单用户': 1093},
+          //   { '日期': '05-02', '访问用户': 3530, '下单用户': 3230},
+          //   { '日期': '05-03', '访问用户': 2923, '下单用户': 2623},
+          //   { '日期': '05-04', '访问用户': 1723, '下单用户': 1423},
+          //   { '日期': '05-05', '访问用户': 3792, '下单用户': 3492},
+          //   { '日期': '05-06', '访问用户': 4593, '下单用户': 4293}
+          // ]
         },
-        chartData:{},
+        chartDataSelect:{},
         chartSettings: {
-          type: this.typeArr[this.index],
-            // metrics: ['访问用户', '下单用户'],
-            // dimension: ['日期']
+           type: this.typeArr[this.index],
         }
       }
     },
     methods: {
+      //设置预览是否显示
+      hanldePreview:function(){
+        if(this.tableShow == false){
+          this.tableShow = true
+        }else {
+          this.tableShow = false
+        }
+      },
 
       //改变图表类型
       changeType: function () {
         this.chartSettings = { type: this.typeArr[this.radio] }
       },
+
+      //点击常规处理
+      primaryHandle: function () {
+        this.chartSettings = {
+          metrics:this.checkboxGroup2,
+          dimension:this.checkboxGroup1
+        }
+        // if(this.chartShow == false){
+        //   this.chartShow = true
+        // }else {
+        //   this.chartShow = false
+        // }
+      },
+
       //处理上传
       handleSubmit(filelist){
         this.$refs.upload.submit();
@@ -240,6 +274,20 @@
 
       handleSuccess(response,file,filelist){
         this.chartData = file.response
+        // console.log("表头数据")
+        // console.log("表头数据")
+        // console.log("表头数据")
+        // console.log("表头数据")
+        // console.log("表头数据")
+        // console.log(this.chartData.columns)
+        this.checkboxOptions = this.chartData.columns
+        // console.log("选项数据")
+        // console.log("选项数据")
+        // console.log("选项数据")
+        // console.log("选项数据")
+        // console.log("选项数据")
+        // console.log(this.checkboxOptions)
+
         console.log("清空")
         console.log("清空")
         console.log("清空")
