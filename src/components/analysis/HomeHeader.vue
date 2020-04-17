@@ -86,6 +86,11 @@
           ]
         },
       }
+    },
+    methods:{
+      logOut:function() {
+        this.$router.replace('/login')
+      }
     }
   }
 </script>

@@ -35,8 +35,8 @@
           {name: '/index/home', navItem: '首页'},
           {name: '/index/exAndcs', navItem: 'Excel、Csv'},
           {name: '/index/woAndtx', navItem: 'Word、Txt'},
-          {name: '/index/test', navItem: 'Test'},
-          {name: '/index/upload_test', navItem: 'upload_test'}
+          // {name: '/index/test', navItem: 'Test'},
+          // {name: '/index/upload_test', navItem: 'upload_test'}
         ]
       }
     }

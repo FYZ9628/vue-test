@@ -40,7 +40,7 @@ export default new Router({
         {
           path: 'exAndcs',
           name: 'ExAndcs',
-          component: exAndCs
+          component: Test
         },
         {
           path: 'woAndtx',

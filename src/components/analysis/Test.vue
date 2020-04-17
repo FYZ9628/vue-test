@@ -56,7 +56,7 @@
             <el-col :span="24"><div class="grid-content bg-purple">
               <el-checkbox-group
                 v-model="checkboxGroup1"
-                max="1">
+                >
                 <el-checkbox-button v-for="option in checkboxOptions" :label="option" :key="option">{{option}}</el-checkbox-button>
               </el-checkbox-group>
             </div></el-col>

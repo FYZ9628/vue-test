@@ -2,7 +2,7 @@
   <div>
     <el-container>
       <!-- 侧边导航菜单 -->
-      <el-aside style="height: 100%" width="350px">
+      <el-aside style="height: 100%" width="400px">
         <el-row style="height: 20%">
           <el-col :span="24" class="grid-a-contentWidth">
 
