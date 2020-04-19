@@ -30,8 +30,8 @@
       return {
         logining: false,
         loginForm: {
-          account: '116263000101',
-          password: '123456'
+          account: '',
+          password: ''
         },
         rules2: {
           account: [

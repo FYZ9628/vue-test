@@ -172,6 +172,7 @@
           multiple
           limit="1"
           accept=".xls,.xlsx"
+          :file-list="fileList"
           :auto-upload="false">
     <i class="el-icon-upload"></i>
     <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
@@ -209,8 +210,7 @@
         dialogVisible: false,
         loading: false,
         checkboxOptions:[],//复选框内容
-        filelist:[],
-
+        fileList:'',
         tableShow:false,//设置预览表格显示
         chartShow:false,//设置图表显示
 
@@ -252,6 +252,7 @@
           metrics:this.checkboxGroup2,
           dimension:this.checkboxGroup1
         }
+        this.chartShow = true
         // if(this.chartShow == false){
         //   this.chartShow = true
         // }else {
@@ -259,20 +260,67 @@
         // }
       },
 
+      //点击求和处理
+      sumHandle: function () {
+        let _this = this;
+        let formData=new FormData();
+         formData.append('type','sum')
+         formData.append('checklist',this.checkboxGroup1)
+         formData.append('file',this.fileList)
+        this.$axios.post('/handle_sum_average/',formData,{
+          'Content-Type':'multipart/form-data'
+        }).then(res=>{
+          console.log("返回的数据")
+          console.log("返回的数据")
+          console.log("返回的数据")
+          console.log("返回的数据")
+          console.log(res.data)
+          this.chartData = res.data
+
+          console.log("改变后的表格数据")
+          console.log("改变后的表格数据")
+          console.log("改变后的表格数据")
+          console.log(this.chartData)
+        })
+      },
+
+      //点击求平均处理
+      averageHandle: function () {
+        let _this = this;
+        let formData=new FormData();
+        formData.append('type','average')
+        formData.append('checklist',this.checkboxGroup1)
+        formData.append('file',this.fileList)
+        this.$axios.post('/handle_sum_average/',formData,{
+          'Content-Type':'multipart/form-data'
+        }).then(res=>{
+          console.log(res.data)
+          this.chartData = res.data
+          console.log(this.chartData)
+        })
+      },
+
+      //点击统计处理
+      statisticalHandle: function () {
+
+      },
+
       //处理上传
       handleSubmit(filelist){
         this.$refs.upload.submit();
         this.dialogVisible = false
+        this.chartShow = false
         filelist.clearFiles()
       },
 
-      //文件列表组件状态改变时的处理
-      //   handleChange(file){
-      //   dialogFormVisible = false
-      //   },
-
 
       handleSuccess(response,file,filelist){
+        this.fileList = filelist[0].raw
+        console.log("表头数据")
+        console.log("表头数据")
+        console.log("表头数据")
+        console.log("表头数据")
+        // console.log(this.fileList)
         this.chartData = file.response
         // console.log("表头数据")
         // console.log("表头数据")
@@ -298,7 +346,9 @@
         filelist.clearFiles()
       },
 
-
+      handleChange(file, fileList) {
+        this.fileList = fileList.slice(-3);
+      },
 
         //超出最大上传文件数量时的处理方法
         handleExceed(){

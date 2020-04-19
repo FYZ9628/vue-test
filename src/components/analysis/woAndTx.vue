@@ -96,31 +96,15 @@
               <el-row type="flex">
                 <el-col :span="24" align="middle">
                   <div class="grid-content bg-purple">
-                    <ve-chart :data="chartData" :settings="chartSettings"></ve-chart>
+                    <ve-chart :data="chartData"
+                              :settings="chartSettings"
+                              :extend="extend"
+                    ></ve-chart>
                   </div></el-col>
               </el-row>
             </el-col>
           </el-row>
         </div>
-        <!--          &lt;!&ndash; 第二列布局 &ndash;&gt;-->
-        <!--          <div style="margin-top: 20px; height: 60%">-->
-        <!--            <el-row >-->
-        <!--              <el-col :span="24" class="grid-a-contentWidth">-->
-        <!--                <el-row  type="flex" style="margin-top: 20px">-->
-        <!--                  <el-col :span="24" align="middle"><div class="grid-content bg-purple">-->
-        <!--                    <h3 class="login_title">图表显示</h3>-->
-        <!--                  </div></el-col>-->
-        <!--                </el-row>-->
-        <!--                <el-row type="flex">-->
-        <!--                  <el-col :span="24" align="middle">-->
-        <!--                    <div class="grid-content bg-purple">-->
-        <!--                      <ve-chart :data="chartData" :settings="chartSettings"></ve-chart>-->
-        <!--&lt;!&ndash;                      <ve-wordcloud :data="chartData"></ve-wordcloud>&ndash;&gt;-->
-        <!--                    </div></el-col>-->
-        <!--                </el-row>-->
-        <!--              </el-col>-->
-        <!--            </el-row>-->
-        <!--          </div>-->
       </el-main>
     </el-container>
     <el-dialog
@@ -161,6 +145,11 @@
     name: 'woAndTx',
     components: {Navigation, HomeHeader},
     data () {
+      this.extend = {
+        series: {
+          label: { show: true, position: "top" }
+        }
+      },
       this.typeArr = ['histogram','pie']
       this.index = 0
       return {
@@ -216,6 +205,16 @@
         console.log(file.response)
         this.chartData = file.response
       },
+
+      //超出最大上传文件数量时的处理方法
+      handleExceed(){
+        this.$message({
+          type:'warning',
+          message:'超出最大上传文件数量的限制！'
+        })
+        return;
+      },
+
       handleClose(done) {
         this.$confirm('确认关闭？')
           .then(_ => {
