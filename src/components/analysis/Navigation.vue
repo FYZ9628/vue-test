@@ -19,7 +19,7 @@
       style="text-align: center; font-size: 16px; font-weight: bolder;"
     >
       <el-menu-item v-for="(item,i) in navList" :key="i" :index="item.name"
-                    style="width: 150px; font-size: 20px">
+                    style="width: 220px; font-size: 20px">
         {{ item.navItem }}
       </el-menu-item>
     </el-menu>
@@ -33,8 +33,8 @@
       return {
         navList: [
           {name: '/index/home', navItem: '首页'},
-          {name: '/index/exAndcs', navItem: 'Excel | Csv'},
-          {name: '/index/woAndtx', navItem: 'Word | Txt'},
+          {name: '/index/exAndcs', navItem: 'Excel | Csv 文件处理'},
+          {name: '/index/woAndtx', navItem: 'Word | Txt 文件处理'},
           // {name: '/index/test', navItem: 'Test'},
           // {name: '/index/upload_test', navItem: 'upload_test'}
         ]

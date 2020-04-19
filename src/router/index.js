@@ -24,7 +24,10 @@ export default new Router({
     {
       path: '/login',
       name: 'Login',
-      component: Login
+      component: Login,
+      meta: {
+        title: '登录'
+      }
     },
     {
       path: '/index',
@@ -35,17 +38,26 @@ export default new Router({
         {
           path: 'home',
           name: 'Home',
-          component: AnalysisHome
+          component: AnalysisHome,
+          meta: {
+            title: '首页'
+          }
         },
         {
           path: 'exAndcs',
           name: 'ExAndcs',
-          component: Test
+          component: Test,
+          meta: {
+            title: 'Excel|Csv 文件处理'
+          }
         },
         {
           path: 'woAndtx',
           name: 'WoAndtx',
-          component: woAndTx
+          component: woAndTx,
+          meta: {
+            title: 'Wrod|Txt 文件处理'
+          }
         },
         {
           path: 'test',

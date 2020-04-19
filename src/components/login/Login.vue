@@ -3,8 +3,8 @@
   <el-form :model="loginForm" :rules="rules2" ref="loginForm" class="login-container" label-position="left"
            label-width="0px">
     <h3 class="login_title">欢迎使用数据分析系统</h3>
-    <el-form-item prop="account">
-      <el-input type="text" v-model="loginForm.account"
+    <el-form-item prop="username">
+      <el-input type="text" v-model="loginForm.username"
                 auto-complete="off" placeholder="账号"></el-input>
     </el-form-item>
     <el-form-item prop="password">
@@ -12,7 +12,7 @@
                 auto-complete="off" placeholder="密码" v-on:keyup.enter.native="login"></el-input>
     </el-form-item>
 
-    <el-checkbox v-model="checked" class="remember">记住密码</el-checkbox>
+<!--    <el-checkbox v-model="checked" class="remember">记住密码</el-checkbox>-->
 
     <el-form-item style="width: 100%">
       <el-button type="primary" style="width: 100%;background: #505458;
@@ -30,7 +30,7 @@
       return {
         logining: false,
         loginForm: {
-          account: '',
+          username: '',
           password: ''
         },
         rules2: {
@@ -49,53 +49,37 @@
       login(){
         this.logining = false
         this.$router.push("index/home")
-      }
-      // login () {
-      //   var _this = this
-      //   console.log(this.$store.state)
-      //   this.$refs.loginForm.validate((valid) =>{
+      },
+      //登录
+      // login: function () {
+      //   this.$refs.loginForm.validate((valid) => {
       //     if (valid) {
-      //       this.logining = true
-      //       this.$axios
-      //         .post('/login', {
-      //           account: this.loginForm.account,
-      //           password: this.loginForm.password
-      //         })
-      //         .then(successResponse => {
-      //           this.logining = false
-      //           if (successResponse.data.code === 200) {//跳转到教师
-      //
-      //             this.$store.commit('login',successResponse.data);
-      //             //_this.$store.commit('login', _this.loginForm)
-      //             var path = this.$route.query.redirect
-      //
-      //             this.$router.replace({path: path === '/' || path === undefined ? '/teacher' : path})
-      //           }else  if (successResponse.data.code === 300) {//跳转到学生
-      //
-      //
-      //             this.$store.commit('login',successResponse.data);
-      //             //_this.$store.commit('login', _this.loginForm)
-      //             var path = this.$route.query.redirect
-      //
-      //             this.$router.replace({path: path === '/' || path === undefined ? '/student' : path})
+      //         this.logining = true;
+      //         this.$axios
+      //           .post('/login/', {
+      //             username:this.loginForm.username,
+      //             password:this.loginForm.password,
+      //           }).then(resp => {
+      //           if (resp.status === 400){
+      //             this.$message({
+      //               message: '登录失败',
+      //               type: 'failure'
+      //             });
+      //             this.logining = false;
       //           }
-      //           else {
-      //             _this.$message({
-      //               message:'账号或密码错误',
-      //               type:'error'
-      //             })
+      //           if (resp && resp.status === 200) {
+      //             this.logining = false;
+      //             this.$message({
+      //               message: '添加成功',
+      //               type: 'success'
+      //             });
+      //             this.$router.push("index/home")
       //           }
       //         })
-      //         .catch(failResponse => {
-      //         })
-      //     }else {
-      //       console.log('error submit!!');
-      //       return false;
+      //
       //     }
-      //
       //   })
-      //
-      // }
+      // },
     }
   }
 </script>
