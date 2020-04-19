@@ -13,7 +13,7 @@
             </el-row>
             <el-row  type="flex">
               <el-col :span="23"><div class="grid-content bg-purple">
-                <el-button type="primary" @click="dialogVisible = true">上传<i class="el-icon-upload el-icon--right"></i></el-button>
+                <el-button type="primary" @click="handleOpenUpload">上传<i class="el-icon-upload el-icon--right"></i></el-button>
               </div></el-col>
             </el-row>
 
@@ -50,24 +50,6 @@
       </el-aside>
       <!-- 内容 -->
       <el-main style="height: 100%">
-        <!--          &lt;!&ndash; 第一列栅格布局 &ndash;&gt;-->
-        <!--          <div style="height: 35%;margin-top: 10px">-->
-        <!--            <el-row >-->
-        <!--              <el-col :span="24" class="grid-a-contentWidth">-->
-        <!--                <el-row type="flex" style="margin-top: 20px">-->
-        <!--                  <el-col :span="24" align="middle"><div class="grid-content bg-purple">-->
-        <!--                    <h3 class="login_title">词云</h3>-->
-        <!--                  </div></el-col>-->
-        <!--                </el-row>-->
-        <!--                <el-row  type="flex">-->
-        <!--                  <el-col :span="24"><div class="grid-content bg-purple">-->
-        <!--                    <ve-wordcloud :data="chartData"></ve-wordcloud>-->
-        <!--                  </div></el-col>-->
-        <!--                </el-row>-->
-        <!--              </el-col>-->
-        <!--            </el-row>-->
-        <!--          </div>-->
-        <!-- 第一列栅格布局 -->
         <div >
           <el-row style="height: 30%;">
             <el-col :span="24" class="grid-a-contentWidth">
@@ -109,7 +91,7 @@
     </el-container>
     <el-dialog
       title="上传文件"
-      :visible.sync="dialogVisible"
+      :visible.sync="uploadVisible"
       width="30%"
       :before-close="handleClose">
       <span>
@@ -130,7 +112,7 @@
 </el-upload>
       </span>
       <span slot="footer" class="dialog-footer">
-    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button @click="uploadVisible = false">取 消</el-button>
     <el-button type="primary"
                :loading="loading"
                @click=handleSubmit>确认上传</el-button>
@@ -139,11 +121,9 @@
   </div>
 </template>
 <script>
-  import HomeHeader from '@/components/analysis/HomeHeader'
-  import Navigation from '@/components/analysis/Navigation'
   export default {
     name: 'woAndTx',
-    components: {Navigation, HomeHeader},
+
     data () {
       this.extend = {
         series: {
@@ -155,11 +135,8 @@
       return {
         checkboxGroup1: [],
         checkboxGroup2: [],
-        checkboxGroup3: [],
-        checkboxGroup4: [],
-        dialogVisible: false,
+        uploadVisible: false,
         radio: '0',
-        outputdata:'',
         // chartData: {
         //   columns: ['日期', '访问用户', '下单用户', '下单率'],
         //   rows: [
@@ -171,14 +148,8 @@
         //     { '日期': '05-06', '访问用户': 4593, '下单用户': 4293, '下单率': 0.78 }
         //   ]
         // },
-        chartData: {
-          // columns: ['word', 'count'],
-          //  rows: getRows2()
-          //  rows: this.outputdata
-        },
+        chartData: {},
         chartSettings: { type: this.typeArr[this.index],
-          // metrics: ['count'],
-          // dimension: ['word']
           }
       }
     },
@@ -187,23 +158,21 @@
         this.chartSettings = { type: this.typeArr[this.radio] }
       },
 
-
+      //打开上传组件框
+      handleOpenUpload:function(){
+        this.uploadVisible = true
+      },
       //处理上传
       handleSubmit(filelist){
         this.$refs.upload.submit();
-        filelist.clearFiles()
       },
 
       //上传成功回调
       handleSuccess(response,file,filelist){
-        this.dialogVisible = false
-        console.log("清空")
-        console.log("清空")
-        console.log("清空")
-        console.log("清空")
-        console.log("清空")
+        this.uploadVisible =false
         console.log(file.response)
         this.chartData = file.response
+        this.$refs.upload.clearFiles()//清除上一次上传的文件列表
       },
 
       //超出最大上传文件数量时的处理方法
@@ -223,69 +192,6 @@
           .catch(_ => {});
       }
     }
-  }
-  function getRows () {
-    return [{
-      'word': 'visualMap',
-      'count': 22199
-    }, {
-      'word': 'continuous',
-      'count': 10288
-    },{
-      'word': 'gauge',
-      'count': 12311
-    },{
-      'word': 'textStyle',
-      'count': 32294
-    }, {
-      'word': 'markPoint',
-      'count': 18574
-    }, {
-      'word': 'pie',
-      'count': 38929
-    },{
-      'word': 'label',
-      'count': 37517
-    }, {
-      'word': 'emphasis',
-      'count': 12053
-    }, {
-      'word': 'yAxis',
-      'count': 57299
-    }, {
-      'word': 'name',
-      'count': 15418
-    }, {
-      'word': 'type',
-      'count': 22905
-    },{
-      'word': 'normal',
-      'count': 49487
-    },{
-      'word': 'markLine',
-      'count': 16578
-    }, {
-      'word': 'line',
-      'count': 76970
-    },{
-      'word': 'radar',
-      'count': 15964
-    }, {
-      'word': 'data',
-      'count': 60679
-    }, {
-      'word': 'dataZoom',
-      'count': 24347
-    }, {
-      'word': 'tooltip',
-      'count': 43420
-    }, {
-      'word': 'toolbox',
-      'count': 25222
-    }, {
-      'word': 'geo',
-      'count': 16904
-    }]
   }
 </script>
 

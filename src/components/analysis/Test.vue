@@ -13,7 +13,7 @@
           </el-row>
           <el-row  type="flex">
             <el-col :span="23"><div class="grid-content bg-purple">
-              <el-button type="primary" @click="dialogVisible = true">上传<i class="el-icon-upload el-icon--right"></i></el-button>
+              <el-button type="primary" @click="handleOpenUpload">上传<i class="el-icon-upload el-icon--right"></i></el-button>
               <el-button type="primary" icon="el-icon-search" @click="hanldePreview">预览</el-button>
             </div></el-col>
           </el-row>
@@ -42,31 +42,35 @@
       </el-row>
       <el-row style="height: 50%">
         <el-col :span="24" class="grid-a-contentWidth">
-          <el-row type="flex">
+          <el-row type="flex" style="height:40px;">
             <el-col :span="23" align="middle"><div class="grid-content bg-purple">
               <h3 class="login_title">数据项选择</h3>
             </div></el-col>
           </el-row>
-          <el-row  type="flex">
+          <el-row type="flex" style="height:30px; margin-top: 2px">
+            <el-col :span="23" align="right"><div class="grid-content bg-purple">
+              <el-button type="primary" @click=resetCheckBoxSettings>重置</el-button>
+            </div></el-col>
+          </el-row>
+          <el-row  type="flex" style="height:30px;">
             <el-col :span="3">
               <h3 class="login_title">维度:</h3>
             </el-col>
           </el-row>
-          <el-row>
+          <el-row type="flex" style="margin-top: 5px;margin-bottom: 5px">
             <el-col :span="24"><div class="grid-content bg-purple">
               <el-checkbox-group
-                v-model="checkboxGroup1"
-                >
+                v-model="checkboxGroup1">
                 <el-checkbox-button v-for="option in checkboxOptions" :label="option" :key="option">{{option}}</el-checkbox-button>
               </el-checkbox-group>
             </div></el-col>
           </el-row>
-          <el-row  type="flex">
+          <el-row  type="flex" style="height:30px;">
             <el-col :span="3">
               <h3 class="login_title">指标:</h3>
             </el-col>
           </el-row>
-          <el-row>
+          <el-row style="margin-top: 5px;margin-bottom: 5px">
             <el-col :span="24"><div class="grid-content bg-purple">
               <el-checkbox-group v-model="checkboxGroup2">
                 <el-checkbox-button v-for="option in checkboxOptions" :label="option" :key="option">{{option}}</el-checkbox-button>
@@ -96,8 +100,8 @@
             </el-col>
           </el-row>
           <el-row  type="flex" style="margin-top: 10px">
-            <el-col :span="6" :offset="2" @click="statisticalHandle">
-              <el-button type="primary">统计</el-button>
+            <el-col :span="6" :offset="2">
+              <el-button type="primary"  @click="statisticalHandle">统计</el-button>
             </el-col>
           </el-row>
         </el-col>
@@ -118,12 +122,12 @@
                 <el-table
                   fit="true"
                   stripe="true"
-                  :data="chartData.rows"
+                  :data="initialChartData.rows"
                   max-height="350"
                   border
                   v-if="tableShow"
                   style="width: 100%">
-                <el-table-column v-for="item in chartData.columns" :key="item.value"
+                <el-table-column v-for="item in initialChartData.columns" :key="item.value"
                 :prop="item"
                 :label="item">
                 </el-table-column>
@@ -157,7 +161,7 @@
     </el-main>
     <el-dialog
       title="上传文件"
-      :visible.sync="dialogVisible"
+      :visible.sync="uploadVisible"
       width="30%"
       :before-close="handleClose">
       <span>
@@ -171,7 +175,7 @@
           :on-change="handleChange"
           multiple
           limit="1"
-          accept=".xls,.xlsx"
+          accept=".xls,.xlsx,.csv"
           :file-list="fileList"
           :auto-upload="false">
     <i class="el-icon-upload"></i>
@@ -179,7 +183,7 @@
 </el-upload>
       </span>
       <span slot="footer" class="dialog-footer">
-    <el-button @click="dialogVisible = false">取 消</el-button>
+    <el-button @click="uploadVisible = false">取 消</el-button>
     <el-button type="primary"
                :loading="loading"
                @click=handleSubmit>确认上传</el-button>
@@ -189,15 +193,12 @@
 
 </template>
 <script>
-  import HomeHeader from '@/components/analysis/HomeHeader'
-  import Navigation from '@/components/analysis/Navigation'
   export default {
     name: 'Test',
-    components: {Navigation, HomeHeader},
     data () {
       this.extend = {
         series: {
-          label: { show: true, position: "top" }
+          label: { show: true, position: "top" }//显示柱状图的顶部数字
         }
       },
       this.typeArr = ['histogram','line','pie']
@@ -205,33 +206,27 @@
       return {
         checkboxGroup1: [],//维度复选框组选中内容
         checkboxGroup2: [],//指标复选框组选中内容
-        checkList: [],
-        radio: '0',
-        dialogVisible: false,
+        radio: '0',//单选框组绑定，设置默认显示柱状图
+        uploadVisible: false,//上传组件框是否显示
         loading: false,
         checkboxOptions:[],//复选框内容
         fileList:'',
         tableShow:false,//设置预览表格显示
         chartShow:false,//设置图表显示
-
-        chartData: {
-          // columns: ['日期', '访问用户', '下单用户'],
-          // rows: [
-          //   { '日期': '05-01', '访问用户': 1393, '下单用户': 1093},
-          //   { '日期': '05-02', '访问用户': 3530, '下单用户': 3230},
-          //   { '日期': '05-03', '访问用户': 2923, '下单用户': 2623},
-          //   { '日期': '05-04', '访问用户': 1723, '下单用户': 1423},
-          //   { '日期': '05-05', '访问用户': 3792, '下单用户': 3492},
-          //   { '日期': '05-06', '访问用户': 4593, '下单用户': 4293}
-          // ]
-        },
-        chartDataSelect:{},
+        initialChartData:'',//用于保存初始返回的数据，预览、常规处理方式需要使用
+        chartData: {},//用于保存不同处理方式返回的数据
         chartSettings: {
            type: this.typeArr[this.index],
         }
       }
     },
     methods: {
+
+      //打开上传组件框
+      handleOpenUpload:function(){
+        this.uploadVisible = true
+      },
+
       //设置预览是否显示
       hanldePreview:function(){
         if(this.tableShow == false){
@@ -248,110 +243,161 @@
 
       //点击常规处理
       primaryHandle: function () {
-        this.chartSettings = {
-          metrics:this.checkboxGroup2,
-          dimension:this.checkboxGroup1
+        if(this.checkboxGroup1.length>1) {
+          this.$message({
+            type: 'warning',
+            message: '只允许选择一个维度！'
+          })
+          return
+        }else if(this.checkboxGroup2.length ==0){
+          this.$message({
+            type: 'warning',
+            message: '请选择指标项！'
+          })
+          return
+        }else {
+          this.chartData = this.initialChartData
+          this.chartSettings = {
+            metrics:this.checkboxGroup2,
+            dimension:this.checkboxGroup1
         }
-        this.chartShow = true
-        // if(this.chartShow == false){
-        //   this.chartShow = true
-        // }else {
-        //   this.chartShow = false
-        // }
+        }
       },
 
       //点击求和处理
       sumHandle: function () {
-        let _this = this;
-        let formData=new FormData();
-         formData.append('type','sum')
-         formData.append('checklist',this.checkboxGroup1)
-         formData.append('file',this.fileList)
-        this.$axios.post('/handle_sum_average/',formData,{
-          'Content-Type':'multipart/form-data'
-        }).then(res=>{
-          console.log("返回的数据")
-          console.log("返回的数据")
-          console.log("返回的数据")
-          console.log("返回的数据")
-          console.log(res.data)
-          this.chartData = res.data
+        // this.clearChartSettings()
+        if(this.checkboxGroup2.length>0){
+          this.$message({
+            type:'warning',
+            message:'请不要选择指标项！'
+          })
+          return
+        }else {
+          let _this = this;
+          let formData=new FormData();
+          formData.append('type','sum')
+          formData.append('checklist',this.checkboxGroup1)
+          formData.append('file',this.fileList)
+          this.$axios.post('/handle_sum_average/',formData,{
+            'Content-Type':'multipart/form-data'
+          }).then(res=>{
+            this.chartSettings = {
+              dimension:['属性名']
+            }
+            console.log("返回的数据")
+            console.log(res.data)
+            this.chartData = res.data
 
-          console.log("改变后的表格数据")
-          console.log("改变后的表格数据")
-          console.log("改变后的表格数据")
-          console.log(this.chartData)
-        })
+            console.log("改变后的表格数据")
+            console.log(this.chartData)
+          })
+        }
+
       },
 
       //点击求平均处理
       averageHandle: function () {
-        let _this = this;
-        let formData=new FormData();
-        formData.append('type','average')
-        formData.append('checklist',this.checkboxGroup1)
-        formData.append('file',this.fileList)
-        this.$axios.post('/handle_sum_average/',formData,{
-          'Content-Type':'multipart/form-data'
-        }).then(res=>{
-          console.log(res.data)
-          this.chartData = res.data
-          console.log(this.chartData)
-        })
+        if(this.checkboxGroup2.length>0){
+          this.$message({
+            type:'warning',
+            message:'请不要选择指标项！'
+          })
+          return
+        }else {
+          let _this = this;
+          let formData=new FormData();
+          formData.append('type','average')
+          formData.append('checklist',this.checkboxGroup1)
+          formData.append('file',this.fileList)
+          this.$axios.post('/handle_sum_average/',formData,{
+            'Content-Type':'multipart/form-data'
+          }).then(res=>{
+            this.chartSettings = {
+              dimension:['属性名']
+            }
+            console.log(res.data)
+            this.chartData = res.data
+            console.log(this.chartData)
+          })
+        }
+
       },
 
       //点击统计处理
       statisticalHandle: function () {
-
+        if(this.checkboxGroup1.length > 1){
+          this.$message({
+            type:'warning',
+            message:'选择列数超出限制！'
+          })
+          return
+        }else if(this.checkboxGroup1.length ==0){
+          this.$message({
+            type:'warning',
+            message:'选择列数不能为空！'
+          })
+          return
+        }
+        else if(this.checkboxGroup2.length>0){
+          this.$message({
+            type:'warning',
+            message:'请不要选择指标项！'
+          })
+          return
+        }
+        else {
+          let _this = this;
+          let formData=new FormData();
+          formData.append('type','statistical')
+          formData.append('checklist',this.checkboxGroup1)
+          formData.append('file',this.fileList)
+          this.$axios.post('/handle_statistical/',formData,{
+            'Content-Type':'multipart/form-data'
+          }).then(res=>{
+            this.chartSettings = {
+              dimension:['属性名']
+            }
+            console.log(res.data)
+            this.chartData = res.data
+            console.log(this.chartData)
+          })
+        }
       },
 
       //处理上传
       handleSubmit(filelist){
         this.$refs.upload.submit();
-        this.dialogVisible = false
+        this.uploadVisible =false
         this.chartShow = false
-        filelist.clearFiles()
+        this.clearChartSettings()
+        this.checkboxGroup1 = []
+        this.checkboxGroup2 = []
       },
 
-
+      //初次上传成功处理
       handleSuccess(response,file,filelist){
-        this.fileList = filelist[0].raw
-        console.log("表头数据")
-        console.log("表头数据")
-        console.log("表头数据")
-        console.log("表头数据")
-        // console.log(this.fileList)
+        this.fileList = filelist[0].raw   //将所上传的文件保存，以供求和、求平均、统计等功能使用，删去会使功能失效
+        this.initialChartData = file.response
         this.chartData = file.response
-        // console.log("表头数据")
-        // console.log("表头数据")
-        // console.log("表头数据")
-        // console.log("表头数据")
-        // console.log("表头数据")
-        // console.log(this.chartData.columns)
         this.checkboxOptions = this.chartData.columns
-        // console.log("选项数据")
-        // console.log("选项数据")
-        // console.log("选项数据")
-        // console.log("选项数据")
-        // console.log("选项数据")
-        // console.log(this.checkboxOptions)
-
-        console.log("清空")
-        console.log("清空")
-        console.log("清空")
-        console.log("清空")
-        console.log("清空")
-        console.log(response.data)
-        console.log(chartData)
-        filelist.clearFiles()
+        this.$refs.upload.clearFiles()//清除上一次上传的文件列表
       },
 
-      handleChange(file, fileList) {
-        this.fileList = fileList.slice(-3);
+      //清除图表维度设置
+      clearChartSettings(){
+        this.chartSettings = {
+          metrics:'',
+          dimension:''
+        }
       },
-
-        //超出最大上传文件数量时的处理方法
-        handleExceed(){
+      //清除图表维度设置
+      resetCheckBoxSettings(){
+        this.checkboxGroup1 = []
+        this.checkboxGroup2 = []
+      },
+      //超出最大上传文件数量时的处理方法
+      handleExceed(){
           this.$message({
             type:'warning',
             message:'超出最大上传文件数量的限制！'
